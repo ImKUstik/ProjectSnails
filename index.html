@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Улитки — проект Сухина Святогора</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Pacifico&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;overflow:hidden;background:linear-gradient(135deg,#a8edea,#fed6e3,#d4fc79);background-size:400% 400%;animation:bg 18s ease infinite;height:100vh;width:100vw;letter-spacing:.3px}
+@keyframes bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.clouds{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.cloud{position:absolute;background:rgba(255,255,255,.7);border-radius:50%;filter:blur(8px);animation:float linear infinite}
+@keyframes float{0%{transform:translateX(-300px)}100%{transform:translateX(110vw)}}
+
+.slide{display:none;position:absolute;inset:0;padding:28px 50px;z-index:10;overflow:hidden;background:rgba(255,255,255,.25);backdrop-filter:blur(6px);animation:in .7s cubic-bezier(.2,.9,.3,1.1)}
+.slide.active{display:flex;flex-direction:column;justify-content:center;align-items:center}
+@keyframes in{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ДОПОЛНИТЕЛЬНЫЕ АНИМАЦИИ */
+.fade-up { opacity: 0; animation: fadeUp 0.8s cubic-bezier(.2,.9,.3,1) forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+.zoom-in { opacity: 0; animation: zoomIn 0.6s cubic-bezier(.2,.9,.3,1) forwards; }
+@keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+.slide-in-left { opacity: 0; animation: slideInLeft 0.7s cubic-bezier(.2,.9,.3,1) forwards; }
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+
+.slide-in-right { opacity: 0; animation: slideInRight 0.7s cubic-bezier(.2,.9,.3,1) forwards; }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+h1{font-family:'Pacifico',cursive;font-size:4.4rem;color:#2d5a27;text-shadow:4px 4px 0 #a8e6cf;text-align:center;margin-bottom:18px}
+h2{font-family:'Pacifico',cursive;font-size:2.5rem;color:#2d5a27;text-align:center;margin-bottom:22px;text-shadow:3px 3px 0 #a8e6cf}
+.sub{font-family:'Caveat',cursive;font-size:2rem;color:#4a7c59;text-align:center;margin-bottom:24px;font-weight:600}
+
+.box{background:rgba(255,255,255,.92);border-radius:26px;padding:28px 32px;box-shadow:0 15px 45px rgba(0,0,0,.13);max-width:1180px;width:100%;border:2px solid rgba(168,230,207,.6);max-height:84vh;overflow-y:auto}
+.box::-webkit-scrollbar{width:10px}
+.box::-webkit-scrollbar-thumb{background:#a8e6cf;border-radius:10px}
+
+.q{list-style:none}
+.q li{padding:16px 22px;margin-bottom:12px;background:linear-gradient(90deg,rgba(168,230,207,.4),rgba(254,214,227,.4));border-radius:16px;border-left:6px solid #a8e6cf;font-size:1.15rem;font-weight:600;color:#333}
+.q li:before{content:'✅ ';margin-right:10px}
+.goal li{background:linear-gradient(90deg,rgba(255,235,180,.6),rgba(168,230,207,.4));border-left-color:#e67e22}
+.goal li:before{content:'🎯 '}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+.card{background:linear-gradient(135deg,#a8e6cf,#dcedc1);padding:20px;border-radius:20px;font-size:1.05rem;box-shadow:0 8px 22px rgba(0,0,0,.1)}
+.card h4{color:#2d5a27;margin-bottom:8px;font-size:1.2rem;font-weight:700}
+.card p{font-size:1rem;color:#444;line-height:1.5}
+
+/* Слайд 5: Улитки в истории */
+.history-block { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-bottom: 10px; }
+.history-image { max-width: 280px; width: 100%; border-radius: 20px; border: 4px solid #a8e6cf; box-shadow: 0 8px 24px rgba(0,0,0,.15); margin-bottom: 10px; }
+.history-text { font-size: 1.15rem; color: #333; line-height: 1.8; text-align: justify; text-indent: 25px; }
+.history-text b { color: #2d5a27; }
+.history-highlight { background: linear-gradient(135deg, #fff9e6, #ffe8cc); border-radius: 16px; padding: 16px 20px; border-left: 6px solid #e67e22; margin-top: 16px; font-weight: 600; font-size: 1.05rem; color: #b85c00; }
+
+/* Слайд 6: Кто такая улитка */
+.split-layout{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+.split-text .card{margin-bottom:14px}
+.split-text .card:last-child{margin-bottom:0}
+.split-photo img{width:100%;max-width:100%;height:auto;max-height:550px;object-fit:cover;border-radius:20px;border:4px solid #a8e6cf;box-shadow:0 12px 32px rgba(74,124,89,.32)}
+
+/* Слайд 7: Строение */
+.split-reverse{display:grid;grid-template-columns:1fr 1.2fr;gap:30px;align-items:start}
+.split-reverse .split-photo img{max-height:350px; object-fit:contain}
+.anat-small{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.anat-small .item{background:linear-gradient(135deg,rgba(168,230,207,.45),rgba(254,214,227,.45));border-radius:14px;padding:12px 14px;border-left:4px solid #4a7c59}
+.anat-small .item h4{color:#2d5a27;font-size:1rem;margin-bottom:4px;font-weight:700}
+.anat-small .item p{font-size:.85rem;color:#444;line-height:1.4}
+
+/* Слайд 8: КУЛЬТУРА, МЕДИЦИНА И КОСМЕТИКА */
+.culture-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.culture-card{background:rgba(255,255,255,.95);border-radius:20px;padding:20px;border:3px solid #a8e6cf;box-shadow:0 6px 18px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center}
+.culture-card h4{color:#2d5a27;font-family:'Pacifico',cursive;font-size:1.3rem;margin-bottom:8px}
+.culture-card p{font-size:1rem;color:#333;line-height:1.6}
+.culture-photo{width:100%;max-width:300px;height:220px;object-fit:cover;border-radius:16px;border:3px solid #a8e6cf;display:block;margin:10px auto 0;box-shadow:0 8px 20px rgba(0,0,0,.1)}
+
+/* Слайд 11: Эксперимент */
+.exp-block{background:linear-gradient(135deg,#fff7e6,#e6f9f0);border-radius:20px;padding:24px;border:4px solid #e67e22}
+.exp-block h3{font-family:'Pacifico',cursive;font-size:1.6rem;color:#e67e22;text-align:center;margin-bottom:16px}
+.exp-text{font-size:1.15rem;color:#333;line-height:1.7;font-weight:500;text-indent:20px;text-align:justify;margin-bottom:12px}
+.exp-text:last-child{margin-bottom:0}
+
+/* Слайд 11.1: Еда */
+.food-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.food-card-full{background:rgba(255,255,255,.9);border-radius:20px;padding:16px;border:3px solid #a8e6cf;display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.food-card-full img{width:120px;height:120px;object-fit:cover;border-radius:14px;border:3px solid #a8e6cf}
+.food-card-full h4{color:#2d5a27;font-size:1.2rem;font-weight:700;margin-bottom:6px;font-family:'Pacifico',cursive}
+.food-card-full p{font-size:.95rem;color:#444;line-height:1.45}
+.food-card-full .why{display:inline-block;background:#a8e6cf;color:#2d5a27;font-size:.8rem;padding:3px 10px;border-radius:10px;font-weight:700;margin-top:6px}
+
+/* Слайд 11.2: Содержание террариума */
+.terrarium-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.terr-item{background:linear-gradient(135deg,#e8f4ff,#f5e6ff);border-radius:18px;padding:18px;border-left:6px solid #8e44ad;display:flex;gap:14px;align-items:flex-start}
+.terr-item .icon{font-size:2.2rem;flex-shrink:0}
+.terr-item h4{color:#6c3483;font-size:1.1rem;font-weight:800;margin-bottom:5px}
+.terr-item p{font-size:.95rem;color:#333;line-height:1.5}
+
+/* Слайд 15: Аккуратная таблица */
+.table-normal{width:100%;border-collapse:collapse;margin-bottom:16px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,.05);font-size:1rem}
+.table-normal th{background:#4a7c59;color:#fff;padding:10px 12px;text-align:left;font-weight:700}
+.table-normal td{padding:9px 12px;border-bottom:1px solid #e8f0ea;color:#333}
+.table-normal tr:last-child td{border-bottom:none}
+.table-normal tr:nth-child(even){background:#f7fdf9}
+
+.goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.goals-block { background: linear-gradient(135deg, #f0f8ff, #e6f9f0); border-radius: 20px; padding: 20px; border: 3px solid #4a7c59; }
+.goals-block h3 { font-family: 'Pacifico', cursive; color: #2d5a27; font-size: 1.3rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.goals-block ul { list-style: none; }
+.goals-block li { font-size: 1rem; color: #333; padding: 6px 0 6px 26px; position: relative; line-height: 1.5; border-bottom: 1px dashed rgba(74,124,89,.15); }
+.goals-block li:last-child { border-bottom: none; }
+.goals-block li:before { content: '✔'; position: absolute; left: 0; color: #4a7c59; font-weight: 900; }
+
+/* Навигация */
+.nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100;background:rgba(255,255,255,.94);padding:6px 12px;border-radius:50px;backdrop-filter:blur(12px);box-shadow:0 6px 20px rgba(0,0,0,.16)}
+.nav button{padding:7px 16px;border:none;border-radius:50px;background:linear-gradient(135deg,#a8e6cf,#4a7c59);color:#fff;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.25s}
+.nav button:hover{transform:scale(1.06)}
+.cnt{display:flex;align-items:center;color:#2d5a27;font-weight:700;font-size:.82rem;padding:0 6px}
+
+.author-top{position:absolute;top:26px;right:34px;font-size:1.05rem;color:#555;text-align:right;line-height:1.6;background:rgba(255,255,255,.9);padding:16px 24px;border-radius:20px;border:3px solid #a8e6cf;box-shadow:0 8px 22px rgba(0,0,0,.1);z-index:20}
+.author-top b{color:#2d5a27;font-size:1.1rem}
+
+/* Анимации титула и улитки */
+.slide1 .author-top{opacity:0;animation:authorDrop .9s cubic-bezier(.4,1.5,.5,1) .1s forwards}
+@keyframes authorDrop{0%{opacity:0;transform:translateY(-40px) rotate(-3deg)}60%{opacity:1;transform:translateY(8px) rotate(1deg)}100%{opacity:1;transform:translateY(0) rotate(0)}}
+.slide1 h1{opacity:0;animation:titleZoom 1.1s cubic-bezier(.3,1.6,.5,1) .35s forwards}
+@keyframes titleZoom{0%{opacity:0;transform:scale(.3) rotate(-8deg)}55%{opacity:1;transform:scale(1.15) rotate(3deg)}75%{transform:scale(.95) rotate(-1deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.slide1 .sub{opacity:0;animation:subFade 1s ease-out .9s forwards}
+@keyframes subFade{0%{opacity:0;transform:translateY(20px);letter-spacing:6px}100%{opacity:1;transform:translateY(0);letter-spacing:.3px}}
+.slide1 .sn{opacity:0;animation:snailRise 1.2s cubic-bezier(.4,1.4,.5,1) 1.4s forwards}
+@keyframes snailRise{0%{opacity:0;transform:translateY(70px) scale(.5)}60%{opacity:1;transform:translateY(-15px) scale(1.08)}100%{opacity:1;transform:translateY(0) scale(1) }}
+
+.sn{position:relative;width:340px;height:180px;margin:18px auto;animation:rock 4s ease-in-out infinite}
+@keyframes rock{0%,100%{transform:translateX(-15px)}50%{transform:translateX(15px)}}
+.sn .body{position:absolute;bottom:18px;left:55px;width:190px;height:62px;background:linear-gradient(180deg,#f5e6ca,#d4a76a);border-radius:60px 60px 26px 26px}
+.sn .shell{position:absolute;bottom:42px;left:110px;width:110px;height:110px;background:radial-gradient(circle at 30% 30%,#ffb347,#e67e22,#8e44ad);border-radius:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sn .eye{position:absolute;bottom:62px;width:14px;height:14px;background:#333;border-radius:50%}
+.sn .eye.l{left:66px}.sn .eye.r{left:90px}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.sn .ant{position:absolute;bottom:80px;width:4px;height:34px;background:#d4a76a;border-radius:4px;transform-origin:bottom}
+.sn .ant.l{left:60px;transform:rotate(-20deg)}
+.sn .ant.r{left:86px;transform:rotate(20deg)}
+@keyframes wiggleL{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(-28deg)}}
+@keyframes wiggleR{0%,100%{transform:rotate(20deg)}50%{transform:rotate(28deg)}}
+.sn .smile{position:absolute;bottom:36px;left:72px;width:34px;height:17px;border-bottom:4px solid #8B4513;border-radius:0 0 50% 50%}
+
+/* Анимация вращения раковины и глаз для 1 слайда */
+.slide1 .sn .shell{animation:spin 6s linear infinite 2.6s,shellPop 1s cubic-bezier(.4,1.5,.5,1) 1.8s backwards}
+@keyframes shellPop{0%{transform:scale(0) rotate(-180deg)}100%{transform:scale(1) rotate(0)}}
+.slide1 .sn .eye{animation:blink 3s infinite 2.6s,eyeOpen .5s ease-out 2s backwards}
+@keyframes eyeOpen{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+.slide1 .sn .ant.l{animation:wiggleL 2s ease-in-out infinite 2.5s,antGrowL .8s ease-out 2s backwards;transform-origin:bottom}
+.slide1 .sn .ant.r{animation:wiggleR 2s ease-in-out infinite 2.5s,antGrowR .8s ease-out 2.2s backwards;transform-origin:bottom}
+@keyframes antGrowL{0%{height:0;opacity:0;transform:rotate(0)}100%{height:36px;opacity:1;transform:rotate(-20deg)}}
+@keyframes antGrowR{0%{height:0;opacity:0;transform:rotate(0)}100%{height:36px;opacity:1;transform:rotate(20deg)}}
+.slide1 .sn .smile{opacity:0;animation:smileGrow .6s ease-out 2.6s forwards}
+@keyframes smileGrow{0%{opacity:0;width:0}100%{opacity:1;width:36px}}
+
+.emoji{position:fixed;font-size:2.6rem;opacity:.6;animation:fl 8s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes fl{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-25px) rotate(8deg)}}
+
+.survey-visual{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;margin:20px 0}
+.survey-icon{font-size:5.5rem;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.survey-text{font-size:1.3rem;color:#4a7c59;line-height:1.6;max-width:620px;font-weight:500}
+
+.fact-big{background:linear-gradient(135deg,#fff3cd,#ffe4a1);border-radius:20px;padding:20px 24px;border-left:7px solid #e67e22;margin-bottom:16px}
+.fact-big h4{color:#b85c00;font-size:1.3rem;margin-bottom:8px;font-weight:800}
+.fact-big p{font-size:1.1rem;color:#333;line-height:1.55}
+
+.repro-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.repro-step{background:linear-gradient(135deg,#e8f4ff,#f5e6ff);border-radius:18px;padding:18px;border-left:6px solid #8e44ad;display:flex;gap:14px;align-items:flex-start}
+.repro-step .step-icon{font-size:2.4rem;flex-shrink:0}
+.repro-step h4{color:#6c3483;font-size:1.15rem;font-weight:800;margin-bottom:6px}
+.repro-step p{font-size:1rem;color:#333;line-height:1.5}
+.repro-step .num{display:inline-block;background:#8e44ad;color:#fff;font-weight:800;width:26px;height:26px;line-height:26px;text-align:center;border-radius:50%;font-size:.95rem;margin-right:6px}
+
+.answer-block{background:linear-gradient(135deg,#f0f8ff,#e6f9f0);border-radius:20px;padding:20px 24px;border:3px solid #4a7c59;margin-bottom:16px}
+.answer-block .q-title{display:flex;align-items:flex-start;gap:12px;font-size:1.2rem;color:#2d5a27;font-weight:800;margin-bottom:10px}
+.answer-block .q-title .icon{font-size:1.7rem;flex-shrink:0}
+.answer-block .answer-text{font-size:1.05rem;color:#333;line-height:1.6;padding-left:40px}
+.answer-block .answer-text b{color:#2d5a27}
+
+.final-quote{background:linear-gradient(135deg,#d4fc79,#a8e6cf);border-radius:20px;padding:18px 26px;text-align:center;font-size:1.2rem;color:#2d5a27;font-weight:700;border:3px solid #4a7c59;line-height:1.5}
+
+.slide-photo{width:100%;max-width:520px;max-height:320px;object-fit:cover;border-radius:20px;border:4px solid #a8e6cf;box-shadow:0 12px 32px rgba(74,124,89,.32);display:block;margin:0 auto 12px}
+.slide-photo-caption{font-family:'Caveat',cursive;font-size:1.5rem;color:#4a7c59;margin-bottom:18px;font-weight:600;text-align:center}
+
+@media(max-width:1100px){
+  .split-layout, .split-reverse, .food-grid, .terrarium-grid, .culture-grid{grid-template-columns:1fr}
+  .goals-grid { grid-template-columns: 1fr; }
+}
+@media(max-width:800px){
+  h1{font-size:3rem}
+  h2{font-size:1.9rem}
+  .sub{font-size:1.5rem}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .slide{padding:18px 22px}
+  .box{padding:20px 22px}
+  .author-top{position:static;margin:0 auto 18px;text-align:center;font-size:.95rem}
+  .food-card-full{grid-template-columns:1fr;text-align:center}
+  .food-card-full img{margin:0 auto}
+  .nav{padding:5px 10px;gap:8px}
+  .nav button{padding:6px 13px;font-size:.75rem}
+  .cnt{font-size:.75rem;padding:0 4px}
+  .sn{width:260px;height:150px}
+}
+</style>
+</head>
+<body>
+
+<div class="clouds" id="c"></div>
+<div class="emoji" style="top:8%;left:4%">🐌</div>
+<div class="emoji" style="top:18%;right:6%;animation-delay:1s">✨</div>
+<div class="emoji" style="top:75%;left:8%;animation-delay:2s">🌸</div>
+<div class="emoji" style="top:85%;right:12%;animation-delay:3s">🍃</div>
+<div class="emoji" style="top:45%;left:2%;animation-delay:4s">💧</div>
+<div class="emoji" style="top:55%;right:3%;animation-delay:5s">🌿</div>
+
+<!-- 1 ТИТУЛ (с анимированной улиткой) -->
+<div class="slide active slide1">
+<div class="author-top">
+<b>Выполнил:</b> Сухин Святогор Константинович<br>
+Ученик 6 «Д» класса школы №119
+</div>
+<h1>УЛИТКИ</h1>
+<div class="sub">Маленькие путешественники с большим секретом</div>
+<div class="sn">
+<div class="body"></div>
+<div class="shell"></div>
+<div class="ant l"></div>
+<div class="ant r"></div>
+<div class="eye l"></div>
+<div class="eye r"></div>
+<div class="smile"></div>
+</div>
+</div>
+
+<!-- 2 ЦЕЛИ -->
+<div class="slide">
+<h2 class="fade-up">🎯 Цели проекта</h2>
+<div class="box fade-up delay-1">
+<ul class="q goal">
+<li>Изучить всё об улитках</li>
+<li>Вспомнить всё, что знаем об улитках</li>
+<li>Узнать больше об улитках</li>
+</ul>
+<div style="text-align:center;font-size:3.4rem;margin-top:24px">🐌🎯📚</div>
+</div>
+</div>
+
+<!-- 3 ЗАДАЧИ -->
+<div class="slide">
+<h2 class="fade-up">📋 Задачи проекта</h2>
+<div class="box fade-up delay-1">
+<ul class="q goal">
+<li>Изучить информацию об улитках</li>
+<li>Узнать, какие виды бывают и что они делают</li>
+<li>Исследовать улитку научным путём</li>
+</ul>
+<div style="text-align:center;font-size:3.4rem;margin-top:24px">🔬🐌📖</div>
+</div>
+</div>
+
+<!-- 4 АНКЕТА -->
+<div class="slide">
+<h2 class="fade-up">📋 Анкетирование</h2>
+<div class="box fade-up delay-1">
+<div class="survey-visual">
+<div class="survey-icon">🧑‍🎓</div>
+<div class="survey-text">
+Чтобы узнать, актуальна ли моя тема одноклассникам, я провёл анкетирование. В опросе приняли участие <b>24 человека</b>. Выяснилось, что подробнее узнать об улитках будет интересно <b>18 людям</b>.
+</div>
+<div class="survey-icon">🐌</div>
+</div>
+<div style="text-align:center;font-size:3rem;margin-top:16px">📊 ✏️ 📝</div>
+</div>
+</div>
+
+<!-- 5 УЛИТКИ В ИСТОРИИ (с картинкой) -->
+<div class="slide">
+<h2 class="fade-up">📜 Улитки в истории</h2>
+<div class="box fade-up delay-1" style="text-align: center;">
+<div class="history-block zoom-in delay-1">
+<img src="https://avatars.mds.yandex.net/get-shedevrum/14906380/img_0813a9a7309111f09093be1f098d7bb4/orig" alt="Улитка в истории" class="history-image">
+</div>
+<div class="history-block">
+<p class="history-text fade-up delay-2">
+Улитки — одни из немногих существ, которые смогли пережить <b>динозавров</b> и множество глобальных катаклизмов. Их история насчитывает более <b>500 миллионов лет</b>. За это время они стали свидетелями расцвета и падения целых цивилизаций. 
+</p>
+<p class="history-text fade-up delay-3">
+В <b>Древнем Египте</b> и <b>Греции</b> улиток считали священными созданиями. В <b>Древнем Риме</b> их подавали к столу как изысканный деликатес. А в средние века из улиток делали целебные настойки и мази. Люди всегда замечали их удивительную живучесть и медлительность.
+</p>
+<div class="history-highlight zoom-in delay-4">
+🐌 <b>В культуре:</b> Спиралевидная форма раковины вдохновляла архитекторов на создание знаменитых лестниц, а художники рисовали их на полотнах, символизируя мудрость и течение времени.
+</div>
+</div>
+</div>
+</div>
+
+<!-- 6 ПЯТЬ ФАКТОВ -->
+<div class="slide">
+<h2 class="fade-up">🔍 5 фактов, которые не знают даже взрослые</h2>
+<div class="box fade-up delay-1">
+<div class="fact-big slide-in-left delay-1">
+<h4>🦷 Факт 1. Зубов больше, чем у акулы</h4>
+<p>У улитки около <b>25 000 зубов</b> на языке-радуле. Это в 10 раз больше, чем у большой белой акулы (у неё всего ~3 000).</p>
+</div>
+<div class="fact-big slide-in-left delay-2">
+<h4>💙 Факт 2. Голубая кровь</h4>
+<p>Кровь улитки <b>голубого цвета</b>! В ней вместо железа — медь. Такой пигмент называется гемоцианин.</p>
+</div>
+<div class="fact-big slide-in-left delay-3">
+<h4>🔄 Факт 3. Может отрастить голову</h4>
+<p>Если улитка потеряет рожки или часть тела — она <b>отрастит их заново</b>. Это называется регенерация.</p>
+</div>
+<div class="fact-big slide-in-left delay-4">
+<h4>💤 Факт 4. Может спать до 3 лет</h4>
+<p>В неблагоприятных условиях улитка впадает в <b>анабиоз</b>, закрывается эпифрагмой и может спать до 3 лет.</p>
+</div>
+<div class="fact-big slide-in-left delay-5">
+<h4>🐚 Факт 5. Раковина растёт вместе с улиткой</h4>
+<p>Раковина — это <b>известковый домик</b>, который улитка строит всю жизнь. По годовым кольцам можно определить её возраст.</p>
+</div>
+<div style="text-align:center;margin-top:16px;padding:12px;background:rgba(168,230,207,.3);border-radius:14px;font-size:1rem;color:#2d5a27;font-weight:600">
+📖 Все непонятные слова — в <b>Приложении 1.2</b> (смотри в конце проекта).
+</div>
+</div>
+</div>
+
+<!-- 7 КТО ТАКАЯ УЛИТКА -->
+<div class="slide">
+<h2 class="fade-up">🔎 Кто такая улитка?</h2>
+<div class="box fade-up delay-1">
+<div class="split-layout">
+<div class="split-text">
+<div class="card slide-in-left delay-1"><h4>📖 Научное название</h4><p>Улитки — это <b>брюхоногие моллюски</b> (класс Gastropoda). Самый многочисленный класс моллюсков на Земле.</p></div>
+<div class="card slide-in-left delay-2"><h4>🌍 Где живут</h4><p>Везде: в садах, лесах, полях, горах, пустынях, реках и океанах. Больше 60 000 видов!</p></div>
+<div class="card slide-in-left delay-3"><h4>🦴 Тип животного</h4><p>Тип — <b>Моллюски</b>. Отряд — <b>Лёгочные</b> (сухопутные) или <b>Жаберные</b> (водные).</p></div>
+<div class="card slide-in-left delay-4"><h4>🐚 Строение тела</h4><p>Тело состоит из головы, ноги и внутренностного мешка. Сверху — раковина из извести.</p></div>
+<div class="card slide-in-left delay-5"><h4>🍃 Чем питается</h4><p>Растительной пищей: листьями, фруктами, овощами. Некоторые — хищники.</p></div>
+<div class="card slide-in-left delay-5"><h4>⏳ Сколько живёт</h4><p>От 2 до 20 лет в зависимости от вида. Ахатина — до 10 лет, виноградная — до 8 лет.</p></div>
+</div>
+<div class="split-photo slide-in-right delay-2">
+<img src="https://media.istockphoto.com/id/1247795083/ru/%D1%84%D0%BE%D1%82%D0%BE/%D0%B1%D1%83%D1%80%D0%B3%D1%83%D0%BD%D0%B4%D0%B8%D0%B8-%D1%83%D0%BB%D0%B8%D1%82%D0%BA%D0%B0.jpg?s=612x612&w=0&k=20&c=iVypgbgLlEw7ufmmVdQctn4_VcLfJtK7sw3tAqdfWFI=" alt="Улитка">
+<p class="slide-photo-caption" style="text-align:center">Бургундская улитка</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 8 СТРОЕНИЕ -->
+<div class="slide">
+<h2 class="fade-up">🔬 Строение улитки</h2>
+<div class="box fade-up delay-1">
+<div class="split-reverse">
+<div class="split-photo zoom-in delay-1">
+<img src="https://studarium.ru/public/img/articles/max/443.jpg" alt="Строение улитки">
+<p class="slide-photo-caption">Внешнее строение улитки</p>
+</div>
+<div>
+<p style="font-size:1.05rem;color:#444;margin-bottom:14px;line-height:1.6" class="fade-up delay-2">Улитка — это удивительный организм, в котором каждый орган выполняет важную функцию. Вот главные составляющие её тела:</p>
+<div class="anat-small">
+<div class="item zoom-in delay-1"><h4>👀 Голова</h4><p>С щупальцами и ртом, втягивается в панцирь.</p></div>
+<div class="item zoom-in delay-2"><h4>📡 Рожки</h4><p>Верхние — с глазами, нижние — обоняние.</p></div>
+<div class="item zoom-in delay-3"><h4>👄 Радула</h4><p>25 000 зубов соскребают пищу.</p></div>
+<div class="item zoom-in delay-4"><h4>🦶 Нога</h4><p>Мускулистая, ползёт волнообразно.</p></div>
+<div class="item zoom-in delay-1"><h4>🐚 Панцирь</h4><p>Из извести, защищает тело.</p></div>
+<div class="item zoom-in delay-2"><h4>🌀 Мантия</h4><p>Складка кожи, строит раковину.</p></div>
+<div class="item zoom-in delay-3"><h4>❤️ Сердце</h4><p>Гонит голубую кровь.</p></div>
+<div class="item zoom-in delay-4"><h4>🫁 Дыхание</h4><p>Лёгким или жабрами.</p></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 9 КУЛЬТУРА, МЕДИЦИНА, КОСМЕТИКА -->
+<div class="slide">
+<h2 class="fade-up">🐌 Улитки в культуре, медицине и косметике</h2>
+<div class="box fade-up delay-1">
+<div class="culture-grid">
+<div class="culture-card slide-in-left delay-1">
+<h4>🎭 В культуре</h4>
+<p>Улитки часто встречаются в мифах и сказках. В некоторых культурах они символизируют мудрость и терпение. В Древнем Египте улиток считали священными животными. В Японии существует праздник, посвящённый улиткам. Спиралевидная форма раковины вдохновляла архитекторов и художников.</p>
+</div>
+<div class="culture-card slide-in-right delay-1">
+<h4>💊 В медицине</h4>
+<p>Слизь улиток содержит белки, которые способствуют регенерации кожи. Её используют для лечения ожогов и ран. Учёные также изучают яд некоторых видов улиток для создания новых лекарств.</p>
+</div>
+<div class="culture-card slide-in-left delay-2">
+<h4>💄 В косметологии</h4>
+<p>На основе слизи улиток создают кремы, маски и сыворотки для лица. Они увлажняют кожу, способствуют её омоложению и улучшают регенерацию клеток.</p>
+</div>
+<div class="culture-card slide-in-right delay-2">
+<img src="https://images.thevoicemag.ru/upload/img_cache/4de/4de8919e2f0acf27923eb6255518f546_ce_2369x1243x0x169_cropped_1200x628.jpg" alt="Косметология с улитками" class="culture-photo zoom-in delay-3">
+</div>
+</div>
+</div>
+</div>
+
+<!-- 10 РАЗМНОЖЕНИЕ -->
+<div class="slide">
+<h2 class="fade-up">💞 Как размножаются улитки</h2>
+<div class="box fade-up delay-1">
+<p style="text-align:center;font-size:1.15rem;color:#6c3483;font-weight:600;margin-bottom:20px" class="fade-up delay-1">Улитки — гермафродиты, но для размножения им всё равно нужен партнёр. Процесс размножения включает несколько стадий.</p>
+
+<div class="repro-grid">
+<div class="repro-step zoom-in delay-1">
+<div class="step-icon">💃</div>
+<div>
+<h4><span class="num">1</span>Брачные танцы</h4>
+<p>Две улитки кружат друг вокруг друга, касаются щупальцами. Это может длиться несколько часов.</p>
+</div>
+</div>
+<div class="repro-step zoom-in delay-2">
+<div class="step-icon">⏳</div>
+<div>
+<h4><span class="num">2</span>Созревание</h4>
+<p>После спаривания проходит 2–4 недели, прежде чем улитка будет готова отложить яйца.</p>
+</div>
+</div>
+<div class="repro-step zoom-in delay-3">
+<div class="step-icon">🕳️</div>
+<div>
+<h4><span class="num">3</span>Поиск места</h4>
+<p>Улитка выбирает влажный участок почвы и роет ямку глубиной 2–5 см.</p>
+</div>
+</div>
+<div class="repro-step zoom-in delay-4">
+<div class="step-icon">🥚</div>
+<div>
+<h4><span class="num">4</span>Кладка</h4>
+<p>В ямку откладывается от 20 до 200 яиц. Затем улитка засыпает кладку землёй и уходит.</p>
+</div>
+</div>
+<div class="repro-step zoom-in delay-5">
+<div class="step-icon">🐣</div>
+<div>
+<h4><span class="num">5</span>Появление потомства</h4>
+<p>Через 2–4 недели вылупляются крошечные улитки. Через год они становятся взрослыми.</p>
+</div>
+</div>
+</div>
+
+<div class="final-quote fade-up delay-3" style="margin-top:18px">
+🌱 <b>Интересно:</b> молодые улитки первое время питаются остатками своей скорлупы, богатой кальцием.
+</div>
+</div>
+</div>
+
+<!-- 11 ЭКСПЕРИМЕНТ -->
+<div class="slide">
+<h2 class="fade-up">🧪 Моя улитка</h2>
+<div class="box fade-up delay-1">
+<div class="zoom-in delay-1">
+<img class="slide-photo" src="https://kazpravda.kz/media/news/2023/04/28/23.jpeg" alt="Моя улитка" style="max-width:400px;max-height:240px">
+<p class="slide-photo-caption">Моя виноградная улитка</p>
+</div>
+<div class="exp-block slide-in-left delay-2">
+<h3>🐌 Знакомство с питомцем</h3>
+<div class="exp-text">
+В <b>2025 году</b> я завёл себе маленькую виноградную улитку. Её размер был совсем крошечным — всего около <b>1–2 сантиметров</b>. Она помещалась на ладони и казалась очень хрупкой.
+</div>
+<div class="exp-text">
+Я с большим интересом кормил её и ухаживал за ней каждый день. Позже я узнал, что виноградные улитки живут максимум <b>5 лет</b>, но при правильном уходе могут прожить и дольше. Это стало для меня важным открытием — теперь я понимаю, насколько ответственно содержать такого питомца.
+</div>
+<div class="exp-text">
+За это время она стала для меня настоящим другом. Я наблюдал, как она растёт, как медленно и уверенно исследует террариум, как прячется в раковину, когда её что-то пугает. Она научила меня терпению и внимательности.
+</div>
+</div>
+</div>
+</div>
+
+<!-- 11.1 ЕДА -->
+<div class="slide">
+<h2 class="fade-up">🍽️ Чем я кормлю свою улитку</h2>
+<div class="box fade-up delay-1">
+<p style="font-size:1.15rem;color:#4a7c59;text-align:center;font-weight:600;margin-bottom:20px" class="fade-up delay-1">Я кормил свою улитку разными продуктами, но больше всего она любила сочные и мягкие лакомства. Вот что она ела чаще всего:</p>
+<div class="food-grid">
+<div class="food-card-full zoom-in delay-1">
+<img src="https://litclubbs.ru/upload/130/u13041/4/8/ulitochnyi-ad-photo-hight.png" alt="Виноград">
+<div>
+<h4>🍇 Виноград</h4>
+<p>Сладкий и сочный. Улитки обожают виноград за его мягкую кожицу и высокое содержание сахара.</p>
+<div class="why">Почему любит: сладкий и мягкий</div>
+</div>
+</div>
+<div class="food-card-full zoom-in delay-2">
+<img src="https://avatars.mds.yandex.net/i?id=edebb397996c28b9cf5404cd9439e1ff_l-9708671-images-thumbs&n=13" alt="Огурец">
+<div>
+<h4>🥒 Огурец</h4>
+<p>Хрустящий и водянистый. Огурцы дают улиткам необходимую влагу и легко жуются.</p>
+<div class="why">Почему любит: много воды</div>
+</div>
+</div>
+<div class="food-card-full zoom-in delay-3">
+<img src="https://avatars.mds.yandex.net/i?id=9a96d00d2946492d617aefadab94ab35_l-4298842-images-thumbs&n=13" alt="Салат">
+<div>
+<h4>🥬 Салат</h4>
+<p>Нежные листья салата — это классическая еда для улиток, богатая витаминами.</p>
+<div class="why">Почему любит: нежные листья</div>
+</div>
+</div>
+<div class="food-card-full zoom-in delay-4">
+<img src="https://avatars.mds.yandex.net/i?id=d6a649b3b8fdc0df73bd7f9f139c2185_sr-4571640-images-thumbs&n=13" alt="Яблоко">
+<div>
+<h4>🍎 Яблоко</h4>
+<p>Сочное и твёрдое. Улитки любят яблоки за их мягкую мякоть и сладкий вкус.</p>
+<div class="why">Почему любит: сладкое и сочное</div>
+</div>
+</div>
+</div>
+<div class="final-quote fade-up delay-3" style="margin-top:18px">
+🐌 <b>Мой вывод:</b> чаще всего моя улитка ела виноград и листья салата. Она предпочитала мягкую и сочную пищу, а от твёрдой и сухой отказывалась.
+</div>
+</div>
+</div>
+
+<!-- 11.2 ТЕРРАРИУМ -->
+<div class="slide">
+<h2 class="fade-up">🏠 Содержание в террариуме</h2>
+<div class="box fade-up delay-1">
+<div class="terrarium-grid">
+<div class="terr-item zoom-in delay-1">
+<div class="icon">🌡️</div>
+<div>
+<h4>Температура</h4>
+<p>+22…+26 °C. Не под солнцем и не у батареи. Оптимальная среда для жизнедеятельности.</p>
+</div>
+</div>
+<div class="terr-item zoom-in delay-2">
+<div class="icon">💧</div>
+<div>
+<h4>Влажность</h4>
+<p>70–90%. Опрыскивать 1–2 раза в день. Влажный мох помогает поддерживать микроклимат.</p>
+</div>
+</div>
+<div class="terr-item zoom-in delay-3">
+<div class="icon">🌿</div>
+<div>
+<h4>Грунт</h4>
+<p>Кокосовый субстрат или влажный мох. Глубина 5–7 см для рытья и укрытия.</p>
+</div>
+</div>
+<div class="terr-item zoom-in delay-4">
+<div class="icon">🍽️</div>
+<div>
+<h4>Кормовая база</h4>
+<p>Свежие овощи, фрукты и зелень. Мел для укрепления раковины (кальций).</p>
+</div>
+</div>
+<div class="terr-item zoom-in delay-5">
+<div class="icon">🧹</div>
+<div>
+<h4>Чистота</h4>
+<p>Уборка раз в 2–3 дня. Замена грунта раз в месяц. Удаление остатков пищи.</p>
+</div>
+</div>
+<div class="terr-item zoom-in delay-5">
+<div class="icon">🤲</div>
+<div>
+<h4>Обращение</h4>
+<p>Брать только снизу под ногу. Не тянуть за раковину. После — мыть руки.</p>
+</div>
+</div>
+</div>
+<div class="final-quote fade-up delay-3" style="margin-top:18px">
+🐌 <b>Террариум — это не просто ёмкость, а целая экосистема, которая требует внимания и заботы.</b>
+</div>
+</div>
+</div>
+
+<!-- 13 УДИВИТЕЛЬНЫЕ СОЗДАНИЯ -->
+<div class="slide">
+<h2 class="fade-up">✨ Удивительные создания — улитки</h2>
+<div class="box fade-up delay-1">
+<p style="font-size:1.35rem;color:#4a7c59;line-height:1.8;text-align:center;font-style:italic;font-weight:500" class="zoom-in delay-1">
+Улитки — удивительные создания! 🐌<br><br>
+Они медленные, но упорные.<br>
+Маленькие, но с 25 000 зубов.<br>
+Тихие, но с голубой кровью.<br>
+Хрупкие, но живут 500 миллионов лет.<br><br>
+<b>Они доказывают: не нужно быть большим и быстрым, чтобы быть удивительным.</b><br><br>
+🌿💚🐌✨
+</p>
+</div>
+</div>
+
+<!-- 14 ЧТО УЗНАЛИ НОВОГО -->
+<div class="slide">
+<h2 class="fade-up">🌟 Что мы узнали нового</h2>
+<div class="box fade-up delay-1">
+<div class="answer-block slide-in-left delay-1">
+<div class="q-title"><span class="icon">🦷</span>О строении</div>
+<div class="answer-text">
+<b>25 000 зубов</b> на радуле. Кровь <b>голубая</b> из-за меди (гемоцианина). Одно сердце и одно лёгкое.
+</div>
+</div>
+
+<div class="answer-block slide-in-left delay-2">
+<div class="q-title"><span class="icon">💞</span>О размножении</div>
+<div class="answer-text">
+Откладывают <b>яйца</b> в землю. Роют ямку 2–5 см, кладут 20–200 яиц. Через 2–4 недели появляются малыши.
+</div>
+</div>
+
+<div class="answer-block slide-in-left delay-3">
+<div class="q-title"><span class="icon">🍽️</span>О питании</div>
+<div class="answer-text">
+Любят сочное и мягкое: виноград, салат, огурец, яблоко. Нельзя: соль, сахар, цитрусы.
+</div>
+</div>
+
+<div class="answer-block slide-in-left delay-4">
+<div class="q-title"><span class="icon">🌍</span>О редких видах</div>
+<div class="answer-text">
+Есть с <b>железным панцирем</b>, <b>с ядом</b>, <b>без глаз</b>, <b>до 30 см</b>, <b>всеми цветами радуги</b>.
+</div>
+</div>
+
+<div class="answer-block slide-in-left delay-5">
+<div class="q-title"><span class="icon">🏠</span>Об уходе</div>
+<div class="answer-text">
+Влажность <b>70–90%</b>, температура <b>+22…+26 °C</b>. Брать снизу под ногу.
+</div>
+</div>
+
+<div class="final-quote fade-up delay-3">
+🐌 <b>Мы узнали много нового и можем рассказать об улитках друзьям!</b>
+</div>
+</div>
+</div>
+
+<!-- 15 ВЫВОД -->
+<div class="slide">
+<h2 class="fade-up">✅ Вывод: мы выполнили все цели и задачи!</h2>
+<div class="box fade-up delay-1">
+<div class="goals-grid">
+<div class="goals-block zoom-in delay-1">
+<h3><span>🎯</span> Цели — выполнены!</h3>
+<ul>
+<li>Изучили <b>строение, виды, питание, размножение</b>.</li>
+<li>Вспомнили всё, что знали, и убедились — многое было мифом.</li>
+<li>Узнали про <b>голубую кровь</b>, <b>25 000 зубов</b> и редкие виды.</li>
+</ul>
+</div>
+<div class="goals-block zoom-in delay-2">
+<h3><span>📋</span> Задачи — решены!</h3>
+<ul>
+<li>Изучили информацию из книг, интернета, наблюдений.</li>
+<li>Узнали виды — от виноградной до вулканической.</li>
+<li>Провели опыт со своей улиткой.</li>
+</ul>
+</div>
+</div>
+
+<div style="overflow-x:auto;margin-bottom:16px" class="fade-up delay-3">
+<table class="table-normal">
+<thead>
+<tr><th>№</th><th>Цель / Задача</th><th>Результат</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Изучить строение</td><td>✅ Выполнено</td></tr>
+<tr><td>2</td><td>Изучить виды</td><td>✅ Выполнено</td></tr>
+<tr><td>3</td><td>Изучить питание</td><td>✅ Выполнено</td></tr>
+<tr><td>4</td><td>Изучить размножение</td><td>✅ Выполнено</td></tr>
+<tr><td>5</td><td>Провести опыт</td><td>✅ Выполнено</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="final-quote zoom-in delay-4">
+🐌 <b>Главный вывод:</b> улитки — удивительные создания, которые доказывают,<br>
+что не нужно быть большим и быстрым, чтобы быть интересным!
+</div>
+</div>
+</div>
+
+<!-- 16 СПАСИБО -->
+<div class="slide">
+<h2 style="font-size:3.2rem" class="fade-up">Спасибо за внимание!</h2>
+<div style="font-family:'Pacifico',cursive;font-size:3.6rem;color:#e67e22;margin:22px 0;text-shadow:3px 3px 0 #fff;animation:pulse 2.5s ease-in-out infinite" class="zoom-in delay-1">🐌✨</div>
+<div class="box fade-up delay-2" style="text-align:center">
+<p style="font-size:1.3rem;color:#4a7c59;line-height:1.7;font-weight:500">
+Улитки — маленькие путешественники с большим секретом.<br><br>
+Берегите природу и её маленьких обитателей!
+</p>
+<div style="font-size:2.6rem;margin-top:16px">💚🌿🐌🌸</div>
+<p style="margin-top:16px;font-size:1rem;color:#888">Проект выполнил: Сухин Святогор Константинович, ученик 6 «Д» класса школы №119</p>
+</div>
+</div>
+
+<div class="nav">
+<button onclick="prev()">◀ Назад</button>
+<div class="cnt"><span id="cur">1</span> / <span id="tot">17</span></div>
+<button onclick="next()">Вперёд ▶</button>
+</div>
+
+<script>
+const cc=document.getElementById('c');
+for(let i=0;i<10;i++){
+  const cl=document.createElement('div');
+  cl.className='cloud';
+  const s=Math.random()*140+70;
+  cl.style.width=s+'px';
+  cl.style.height=s*.6+'px';
+  cl.style.top=Math.random()*100+'%';
+  cl.style.left=Math.random()*100+'%';
+  cl.style.animationDuration=(Math.random()*20+20)+'s';
+  cl.style.animationDelay=(Math.random()*20)+'s';
+  cl.style.opacity=Math.random()*.5+.3;
+  cc.appendChild(cl);
+}
+let idx=0;
+const sl=document.querySelectorAll('.slide');
+document.getElementById('tot').textContent=sl.length;
+function show(n){
+  sl.forEach((s,i)=>s.classList.toggle('active',i===n));
+  document.getElementById('cur').textContent=n+1;
+}
+function next(){if(idx<sl.length-1){idx++;show(idx)}}
+function prev(){if(idx>0){idx--;show(idx)}}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next()}
+  if(e.key==='ArrowLeft'){e.preventDefault();prev()}
+});
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].screenX;if(Math.abs(d)>50){d>0?next():prev()}});
+</script>
+</body>
+</html>
