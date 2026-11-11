@@ -175,16 +175,79 @@ h2{font-family:'Pacifico',cursive;font-size:2.5rem;color:#2d5a27;text-align:cent
 .slide-photo{width:100%;max-width:520px;max-height:320px;object-fit:cover;border-radius:20px;border:4px solid #a8e6cf;box-shadow:0 12px 32px rgba(74,124,89,.32);display:block;margin:0 auto 12px}
 .slide-photo-caption{font-family:'Caveat',cursive;font-size:1.5rem;color:#4a7c59;margin-bottom:18px;font-weight:600;text-align:center}
 
-/* Слайд: интересные виды */
-.species-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.species-card{background:rgba(255,255,255,.95);border-radius:20px;padding:16px;border:3px solid #a8e6cf;display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-.species-card .photo-placeholder{width:110px;height:110px;border-radius:14px;border:3px dashed #a8e6cf;display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#4a7c59;background:rgba(168,230,207,.2)}
-.species-card img{width:110px;height:110px;object-fit:cover;border-radius:14px;border:3px solid #a8e6cf}
-.species-card h4{color:#2d5a27;font-size:1.05rem;font-weight:800;margin-bottom:4px;font-family:'Pacifico',cursive}
-.species-card p{font-size:.9rem;color:#444;line-height:1.45}
+/* ====== Слайд: интересные виды — КРУПНАЯ ТАБЛИЦА-РАМКА ====== */
+.species-table{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+}
+.species-row{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:20px;
+  align-items:center;
+  background:linear-gradient(160deg,#ffffff,#f2fdf8);
+  border:3px solid #a8e6cf;
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 10px 26px rgba(74,124,89,.14);
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+}
+.species-row:hover{
+  transform:translateY(-5px);
+  box-shadow:0 18px 40px rgba(74,124,89,.24);
+  border-color:#4a7c59;
+}
+.species-row img{
+  width:180px;height:180px;object-fit:cover;
+  border-radius:18px;border:4px solid #a8e6cf;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+  transition:transform .35s ease;
+}
+.species-row:hover img{transform:scale(1.06)}
+.species-row h4{
+  color:#2d5a27;
+  font-family:'Pacifico',cursive;
+  font-size:1.45rem;
+  font-weight:800;
+  margin-bottom:10px;
+  line-height:1.2;
+}
+.species-row p{
+  font-size:1.1rem;
+  color:#333;
+  line-height:1.6;
+  font-weight:500;
+}
+
+/* ====== Финальный слайд «Спасибо за внимание» ====== */
+.final-thanks{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:18px;
+}
+.final-thanks h2{
+  font-size:4.2rem;
+  background:linear-gradient(135deg,#2d5a27,#4a7c59,#8e44ad);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(4px 4px 0 #a8e6cf);
+  margin-bottom:0;
+}
+.final-thanks .big-snail{
+  font-size:7rem;
+  animation:bigPulse 2.4s ease-in-out infinite;
+  filter:drop-shadow(0 12px 24px rgba(74,124,89,.35));
+}
+@keyframes bigPulse{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.12) rotate(3deg)}}
+.final-thanks .thanks-line{
+  font-family:'Caveat',cursive;
+  font-size:2.2rem;
+  color:#4a7c59;
+  font-weight:700;
+}
 
 @media(max-width:1100px){
-  .split-layout, .split-reverse, .food-grid, .terrarium-grid, .culture-grid, .species-grid{grid-template-columns:1fr}
+  .split-layout, .split-reverse, .food-grid, .terrarium-grid, .culture-grid{grid-template-columns:1fr}
+  .species-table{grid-template-columns:1fr}
   .goals-grid { grid-template-columns: 1fr; }
 }
 @media(max-width:800px){
@@ -197,12 +260,14 @@ h2{font-family:'Pacifico',cursive;font-size:2.5rem;color:#2d5a27;text-align:cent
   .author-top{position:static;margin:0 auto 18px;text-align:center;font-size:.95rem}
   .food-card-full{grid-template-columns:1fr;text-align:center}
   .food-card-full img{margin:0 auto}
-  .species-card{grid-template-columns:1fr;text-align:center}
-  .species-card .photo-placeholder,.species-card img{margin:0 auto}
+  .species-row{grid-template-columns:1fr;text-align:center}
+  .species-row img{margin:0 auto}
   .nav{padding:5px 10px;gap:8px}
   .nav button{padding:6px 13px;font-size:.75rem}
   .cnt{font-size:.75rem;padding:0 4px}
   .sn{width:260px;height:150px}
+  .final-thanks h2{font-size:2.6rem}
+  .final-thanks .big-snail{font-size:5rem}
 }
 </style>
 </head>
@@ -448,54 +513,61 @@ h2{font-family:'Pacifico',cursive;font-size:2.5rem;color:#2d5a27;text-align:cent
 </div>
 </div>
 
-<!-- 10.1 ИНТЕРЕСНЫЕ ВИДЫ -->
+<!-- 10.1 ИНТЕРЕСНЫЕ ВИДЫ (КРУПНАЯ ТАБЛИЦА-РАМКА) -->
 <div class="slide">
 <h2 class="fade-up">🐌 Интересные виды улиток</h2>
 <div class="box fade-up delay-1">
-<p style="text-align:center;font-size:1.1rem;color:#4a7c59;font-weight:600;margin-bottom:18px">В мире существует более 60 000 видов улиток. Вот несколько самых необычных:</p>
-<div class="species-grid">
-<div class="species-card slide-in-left delay-1">
+<p style="text-align:center;font-size:1.2rem;color:#4a7c59;font-weight:600;margin-bottom:22px">В мире существует более 60 000 видов улиток. Вот несколько самых необычных:</p>
+<div class="species-table">
+
+<div class="species-row slide-in-left delay-1">
 <img src="https://s9.travelask.ru/uploads/post/000/017/879/main_image/facebook-9cb2a2fea58571ae416ec3a465f8811a.jpg" alt="Вулканическая улитка">
 <div>
 <h4>Вулканическая улитка</h4>
 <p>Живёт у подводных вулканов. Её раковина покрыта слоем железа и похожа на рыцарские доспехи.</p>
 </div>
 </div>
-<div class="species-card slide-in-right delay-1">
+
+<div class="species-row slide-in-right delay-1">
 <img src="https://i.pinimg.com/736x/3b/e8/a4/3be8a4e1ad0eeda089c0ec89862bbca9.jpg" alt="Прозрачная (стеклянная) улитка">
 <div>
 <h4>Прозрачная (стеклянная) улитка</h4>
 <p>Обитает в пещерах. Раковина настолько прозрачна, что видно её внутренние органы и движение крови.</p>
 </div>
 </div>
-<div class="species-card slide-in-left delay-2">
+
+<div class="species-row slide-in-left delay-2">
 <img src="https://i.pinimg.com/736x/dc/00/5a/dc005a97b85db56d54c3c7e907bd6119.jpg" alt="Радужная улитка">
 <div>
 <h4>Радужная улитка</h4>
 <p>Обитает в тропиках и переливается всеми цветами радуги. Такая окраска помогает ей маскироваться среди ярких растений.</p>
 </div>
 </div>
-<div class="species-card slide-in-right delay-2">
+
+<div class="species-row slide-in-right delay-2">
 <img src="https://news-img.gismeteo.st/ru/2025/05/shutterstock_2075870131-1-640x427.jpg" alt="Конусная улитка">
 <div>
 <h4>Конусная улитка</h4>
 <p>Морской хищник с красивой раковиной. Выпускает яд через зуб-гарпун, опасный даже для человека.</p>
 </div>
 </div>
-<div class="species-card slide-in-left delay-3">
+
+<div class="species-row slide-in-left delay-3">
 <img src="https://i.pinimg.com/736x/f1/a5/06/f1a506a9e8f9863c2017717d4ea6af00.jpg" alt="Улитка-ниндзя">
 <div>
 <h4>Улитка-ниндзя</h4>
 <p>Крошечная улитка с тёмной раковиной и быстрыми движениями. Прячется в трещинах камней и мгновенно исчезает при опасности.</p>
 </div>
 </div>
-<div class="species-card slide-in-right delay-3">
+
+<div class="species-row slide-in-right delay-3">
 <img src="https://avatars.mds.yandex.net/i?id=67bf608342a3482662be80a551b4dd61_l-5231899-images-thumbs&n=13" alt="Ахатина гигантская">
 <div>
 <h4>Ахатина гигантская</h4>
 <p>Самая крупная сухопутная улитка: раковина до 30 см. Родом из Африки, но живёт и в домашних террариумах.</p>
 </div>
 </div>
+
 </div>
 </div>
 </div>
@@ -665,15 +737,11 @@ h2{font-family:'Pacifico',cursive;font-size:2.5rem;color:#2d5a27;text-align:cent
 
 <!-- 16 СПАСИБО -->
 <div class="slide">
-<h2 style="font-size:3.2rem" class="fade-up">Спасибо за внимание!</h2>
-<div style="font-family:'Pacifico',cursive;font-size:3.6rem;color:#e67e22;margin:22px 0;text-shadow:3px 3px 0 #fff;animation:pulse 2.5s ease-in-out infinite" class="zoom-in delay-1">🐌✨</div>
-<div class="box fade-up delay-2" style="text-align:center">
-<p style="font-size:1.3rem;color:#4a7c59;line-height:1.7;font-weight:500">
-Улитки — маленькие путешественники с большим секретом.<br><br>
-Берегите природу и её маленьких обитателей!
-</p>
-<div style="font-size:2.6rem;margin-top:16px">💚🌿🐌🌸</div>
-<p style="margin-top:16px;font-size:1rem;color:#888">Проект выполнил: Сухин Святогор Константинович, ученик 6 «Д» класса школы №119</p>
+<div class="final-thanks fade-up">
+<h2>Спасибо за внимание!</h2>
+<div class="big-snail">🐌</div>
+<div class="thanks-line">🌿 Берегите природу и её маленьких обитателей! 🌸</div>
+<div style="font-size:2.4rem;letter-spacing:6px;margin-top:6px">💚 ✨ 🌿 🐌 🌸 ✨ 💚</div>
 </div>
 </div>
 
